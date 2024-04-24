@@ -18,6 +18,19 @@ class CamHandler():
     # Add the path of the SDK's dll to the system path
     os.add_dll_directory("C:\Program Files\Daheng Imaging\GalaxySDK\APIDll\Win64")
 
+    def pil_to_bytes(pil_image: Image.Image) -> bytes:
+        """Convert a pillow image to bytes
+
+        Args:
+            pil_image (Image.Image): Pillow image to convert
+
+        Returns:
+            bytes: Byte representation of the image
+        """
+        img_io = io.BytesIO()
+        pil_image.save(img_io, format='PNG')
+        return img_io.getvalue()
+
     def __init__(self):
         """Creates a new instance of the CamHandler class to handle inputs of the camera
 
@@ -85,19 +98,6 @@ class CamHandler():
             image = image.resize(new_size)
 
         return image
-    
-    def pil_to_bytes(pil_image: Image.Image) -> bytes:
-        """Convert a pillow image to bytes
-
-        Args:
-            pil_image (Image.Image): Pillow image to convert
-
-        Returns:
-            bytes: Byte representation of the image
-        """
-        img_io = io.BytesIO()
-        pil_image.save(img_io, format='PNG')
-        return img_io.getvalue()
     
     def preview(self):
         """Open a window to preview the camera stream. 
