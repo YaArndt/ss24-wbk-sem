@@ -13,6 +13,7 @@ from torchvision.models import ResNet50_Weights
 from torchvision.models import ResNet101_Weights
 from torchvision.models import ResNet152_Weights
 from torchvision.models import ResNet
+from torch.optim.lr_scheduler import CosineAnnealingLR
 import torchvision
 
 from torchvision import datasets, models
@@ -85,26 +86,25 @@ def initialize_model(model_name: str, out_dim: int) -> ResNet:
     """
 
 
-    if model_name == 'resnet18':
+    if model_name == 'ResNet18':
         model = models.resnet18(weights=ResNet18_Weights.DEFAULT)
 
-    elif model_name == 'resnet34':
+    elif model_name == 'ResNet34':
         model = models.resnet34(weights=ResNet34_Weights.DEFAULT)
 
-    elif model_name == 'resnet50':
+    elif model_name == 'ResNet50':
         model = models.resnet50(weights=ResNet50_Weights.DEFAULT)
 
-    elif model_name == 'resnet101':
+    elif model_name == 'ResNet101':
         model = models.resnet101(weights=ResNet101_Weights.DEFAULT)
 
-    elif model_name == 'resnet152':
+    elif model_name == 'ResNet152':
         model = models.resnet152(weights=ResNet152_Weights.DEFAULT)
 
     # Modify the fully connected layer to match the number of classes
     num_ftrs = model.fc.in_features
     model.fc = nn.Sequential(
         nn.Linear(num_ftrs, out_dim),  
-        nn.Sigmoid()
     )
 
     model = model.to(device)
@@ -131,10 +131,13 @@ def initialize_loss_function() -> nn.BCEWithLogitsLoss:
     """
     return nn.BCEWithLogitsLoss()
 
+def initialize_scheduler(optimizer, epochs_to_run):
+    return CosineAnnealingLR(optimizer, T_max=epochs_to_run, eta_min=0)
+
 # Define model tryout grid
-models_to_train = ["resnet18", "resnet34", "resnet50", "resnet101", "resnet152"]
+models_to_train = ["ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
 lrs_to_try = [0.001, 0.0001]
-epochs_to_run = 80
+epochs_to_run = 160
 
 # Relevant performance metrics to be used in the creation of the performance DataFrames
 performance_frame_columns = ["Epoch", "Loss", "Validation Loss", "Validation Accuracy"]
@@ -152,6 +155,7 @@ for model_name in models_to_train:
         model = initialize_model(model_name, 1)
         optimizer = initialize_optimizer(model)
         criterion = initialize_loss_function()
+        scheduler = initialize_scheduler(optimizer, epochs_to_run)
 
         # Goes through the epochs
         for epoch in range(epochs_to_run):
@@ -169,6 +173,8 @@ for model_name in models_to_train:
                 optimizer.step()
                 
                 running_loss += loss.item()
+
+            scheduler.step()
 
             # Validation phase
             model.eval()  # Set model to evaluate mode
@@ -194,11 +200,11 @@ for model_name in models_to_train:
             performance_frame_data.append([epoch + 1, loss, val_loss, val_accuracy])
 
             # Print statistics
-            print(f'Model {model_name} | Epoch {epoch+1}, Loss: {round(loss, 4)}, Validation Loss: {round(val_loss, 4)}, Validation Accuracy: {round(val_accuracy, 4)}')
+            print(f'{model_name} | Epoch {epoch+1}, Loss: {round(loss, 4)}, Val Loss: {round(val_loss, 4)}, Val Acc: {round(val_accuracy, 6)}')
 
         # Create statistics frame
         performance_frame = pd.DataFrame(data=performance_frame_data, columns=performance_frame_columns)
-        file_name = f"Performances/ResNet/CSVs/Model Performance - {model_name} - {format(lr, 'e')}.csv"
+        file_name = f"Performances/ResNet/CSVs/Model Performance (Revised) - E{epochs_to_run} - {model_name} - {format(lr, 'e')}.csv"
         performance_frame.to_csv(file_name, sep=";", index=False)
 
         print("DONE!")

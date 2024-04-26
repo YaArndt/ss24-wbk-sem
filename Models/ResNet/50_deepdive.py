@@ -35,6 +35,14 @@ def make_square(image: Image.Image) -> Image.Image:
     # Pad the image and return
     return ImageOps.expand(image, (left, top, right, bottom), fill=0)
 
+# Rotate by multiples of 90 degrees
+rotation_options = [0, 90, 180, 270]
+
+# Create a list of rotation transformations
+rotation_transforms = [
+    transforms.RandomRotation([degrees, degrees]) for degrees in rotation_options
+]
+
 transform = transforms.Compose([
     transforms.Lambda(make_square),
     transforms.Grayscale(),
@@ -49,7 +57,7 @@ transform = transforms.Compose([
     transforms.RandomVerticalFlip(0.2),
 
     # Rotate images
-    transforms.RandomRotation([0, 90, 180, 270]),
+    transforms.RandomChoice(rotation_transforms),
 
     transforms.ToTensor(),
     # Normalization parameters for ImageNet
@@ -83,7 +91,7 @@ model.fc = nn.Sequential(
 model = model.to(device)
 
 epochs_to_run = 100
-optimizer = optim.AdamW(model.parameters(), lr=0.0001)
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
 criterion = nn.BCEWithLogitsLoss()
 scheduler = CosineAnnealingLR(optimizer, T_max=epochs_to_run, eta_min=0)
 
@@ -139,14 +147,14 @@ for epoch in range(epochs_to_run):
     # Print statistics
     print(f'Model ResNet50 DD | Epoch {epoch+1}, Loss: {round(loss, 4)}, Validation Loss: {round(val_loss, 4)}, Validation Accuracy: {round(val_accuracy, 4)}')
 
-    # Create statistics frame
-    performance_frame = pd.DataFrame(data=performance_frame_data, columns=performance_frame_columns)
-    file_name = f"Performances/ResNet 50 Deep Dive/CSVs/Model Performance - ResNet50 DD - Adaptive LR.csv"
-    performance_frame.to_csv(file_name, sep=";", index=False)
+# Create statistics frame
+performance_frame = pd.DataFrame(data=performance_frame_data, columns=performance_frame_columns)
+file_name = f"Performances/ResNet 50 Deep Dive/CSVs/Model Performance - ResNet50 DD - Adaptive LR.csv"
+performance_frame.to_csv(file_name, sep=";", index=False)
 
-    print("DONE!")
+print("DONE!")
 
-    # Clear CUDA cache to prevent bleeding
-    torch.cuda.empty_cache()
+# Clear CUDA cache to prevent bleeding
+torch.cuda.empty_cache()
 
 print("FINISHED!")
