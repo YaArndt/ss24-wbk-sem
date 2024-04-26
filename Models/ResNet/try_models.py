@@ -137,7 +137,7 @@ def initialize_scheduler(optimizer, epochs_to_run):
 # Define model tryout grid
 models_to_train = ["ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
 lrs_to_try = [0.001, 0.0001]
-epochs_to_run = 160
+epochs_to_run = 50
 
 # Relevant performance metrics to be used in the creation of the performance DataFrames
 performance_frame_columns = ["Epoch", "Loss", "Validation Loss", "Validation Accuracy"]
@@ -200,7 +200,7 @@ for model_name in models_to_train:
             performance_frame_data.append([epoch + 1, loss, val_loss, val_accuracy])
 
             # Print statistics
-            print(f'{model_name} | Epoch {epoch+1}, Loss: {round(loss, 4)}, Val Loss: {round(val_loss, 4)}, Val Acc: {round(val_accuracy, 6)}')
+            print(f'{model_name} | Epoch {epoch+1}, Loss: {round(loss, 6)}, Val Loss: {round(val_loss, 6)}, Val Acc: {round(val_accuracy, 6)}')
 
         # Create statistics frame
         performance_frame = pd.DataFrame(data=performance_frame_data, columns=performance_frame_columns)
