@@ -80,9 +80,9 @@ def plot_overview(path: str, mode: str, out_dir: Optional[str] = None):
     
     print(path)
     plot_losses(ax1, path)
-    max_val_acc = round(plot_accuracy(ax2, path), 4)
+    max_val_acc = '%.2f'%(round(plot_accuracy(ax2, path), 4)*100)
 
-    plt.suptitle(f"{model} ({epochs}) - LR: {lr} - Max Val Acc: {max_val_acc * 100}%", fontsize=16, fontweight='bold'), 
+    plt.suptitle(f"{model} ({epochs}) - LR: {lr} - Max Val Acc: {max_val_acc}%", fontweight='bold'), 
 
     if mode in {"save", "both"}:
         plt.savefig(os.path.join(out_dir, file_name.replace("csv", "jpg")), format='jpg', dpi=200)

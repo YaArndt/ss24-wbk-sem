@@ -45,10 +45,8 @@ def make_square(image: Image.Image) -> Image.Image:
     return ImageOps.expand(image, (left, top, right, bottom), fill=0)
 
 transform = transforms.Compose([
-    transforms.Lambda(make_square),
     transforms.Grayscale(),
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.Resize((224, 224)),
 
     # Transform into 3 channel pseudo RGB
     transforms.Grayscale(num_output_channels=3),
@@ -135,9 +133,10 @@ def initialize_scheduler(optimizer, epochs_to_run):
     return CosineAnnealingLR(optimizer, T_max=epochs_to_run, eta_min=0)
 
 # Define model tryout grid
-models_to_train = ["ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
-lrs_to_try = [0.001, 0.0001]
-epochs_to_run = 50
+# models_to_train = ["ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
+models_to_train = ["ResNet18"]
+lrs_to_try = [0.001]
+epochs_to_run = 32
 
 # Relevant performance metrics to be used in the creation of the performance DataFrames
 performance_frame_columns = ["Epoch", "Loss", "Validation Loss", "Validation Accuracy"]
@@ -204,8 +203,10 @@ for model_name in models_to_train:
 
         # Create statistics frame
         performance_frame = pd.DataFrame(data=performance_frame_data, columns=performance_frame_columns)
-        file_name = f"Performances/ResNet/CSVs/Model Performance (Revised) - E{epochs_to_run} - {model_name} - {format(lr, 'e')}.csv"
+        file_name = f"Performances/ResNet/CSVs/Model Performance (Transforms V2) - E{epochs_to_run} - {model_name} - {format(lr, 'e')}.csv"
         performance_frame.to_csv(file_name, sep=";", index=False)
+
+        torch.save(model.state_dict(), f"Models/ResNet/Model-Files/{model_name} - Tv2 - {format(lr, 'e')}.pt")
 
         print("DONE!")
 
