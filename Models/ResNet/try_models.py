@@ -44,6 +44,17 @@ def make_square(image: Image.Image) -> Image.Image:
     # Pad the image and return
     return ImageOps.expand(image, (left, top, right, bottom), fill=0)
 
+def rotation_augment(testset):
+    # Duplicate and rotate images 
+    augmented_dataset = []
+    for image, label in testset:
+        augmented_dataset.append((image, label))
+        augmented_dataset.append((torch.rot90(image, k=1, dims=(1, 2)), label))
+        augmented_dataset.append((torch.rot90(image, k=2, dims=(1, 2)), label))
+        augmented_dataset.append((torch.rot90(image, k=3, dims=(1, 2)), label))
+    return augmented_dataset
+
+
 transform = transforms.Compose([
     transforms.Grayscale(),
     transforms.Resize((224, 224)),
@@ -60,14 +71,23 @@ transform = transforms.Compose([
 # Load your dataset
 dataset = datasets.ImageFolder(root='Data/BilderNeu', transform=transform)
 
-# Split dataset into training and validation
+# Split dataset into training and testing
 train_size = int(0.8 * len(dataset))
-val_size = len(dataset) - train_size
-train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+test_size = len(dataset) - train_size
+train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+
+print(f"Train size: {len(train_dataset)}")
+print(f"Test size: {len(test_dataset)}")
+
+train_dataset = rotation_augment(train_dataset)
+test_dataset = rotation_augment(test_dataset)
+
+print(f"Train size augmented: {len(train_dataset)}")
+print(f"Test size augmented: {len(test_dataset)}")
 
 # Create data loaders
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 # If using GPU
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -134,12 +154,12 @@ def initialize_scheduler(optimizer, epochs_to_run):
 
 # Define model tryout grid
 # models_to_train = ["ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
-models_to_train = ["ResNet18"]
-lrs_to_try = [0.001]
-epochs_to_run = 32
+models_to_train = ["ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
+lrs_to_try = [0.001, 0.0001]
+epochs_to_run = 30
 
 # Relevant performance metrics to be used in the creation of the performance DataFrames
-performance_frame_columns = ["Epoch", "Loss", "Validation Loss", "Validation Accuracy"]
+performance_frame_columns = ["Epoch", "Train Loss", "Test Loss", "Test Accuracy"]
 
 # Goes through the tryout grid
 for model_name in models_to_train:
@@ -177,36 +197,36 @@ for model_name in models_to_train:
 
             # Validation phase
             model.eval()  # Set model to evaluate mode
-            val_loss = 0.0
-            val_accuracy = 0
+            test_loss = 0.0
+            test_accuracy = 0
             with torch.no_grad():
-                for inputs, labels in val_loader:
+                for inputs, labels in test_loader:
                     inputs, labels = inputs.to(device), labels.to(device)
                     outputs = model(inputs).view(-1)
                     loss = criterion(outputs, labels.float())
-                    val_loss += loss.item()
+                    test_loss += loss.item()
 
                     # Calculate accuracy
                     preds = torch.round(torch.sigmoid(outputs))
-                    val_accuracy += torch.sum(preds == labels.data)
+                    test_accuracy += torch.sum(preds == labels.data)
 
             # Calculate performance statistics
             loss = float(running_loss / len(train_loader))
-            val_loss = float(val_loss / len(val_loader))
-            val_accuracy = float(val_accuracy / len(val_dataset))
+            test_loss = float(test_loss / len(test_loader))
+            test_accuracy = float(test_accuracy / len(test_dataset))
 
             # Log statistics
-            performance_frame_data.append([epoch + 1, loss, val_loss, val_accuracy])
+            performance_frame_data.append([epoch + 1, loss, test_loss, test_accuracy])
 
             # Print statistics
-            print(f'{model_name} | Epoch {epoch+1}, Loss: {round(loss, 6)}, Val Loss: {round(val_loss, 6)}, Val Acc: {round(val_accuracy, 6)}')
+            print(f'{model_name} | Epoch {epoch+1}, Train Loss: {round(loss, 6)}, Test Loss: {round(test_loss, 6)}, Test Acc: {round(test_accuracy, 6)}')
 
         # Create statistics frame
         performance_frame = pd.DataFrame(data=performance_frame_data, columns=performance_frame_columns)
         file_name = f"Performances/ResNet/CSVs/Model Performance (Transforms V2) - E{epochs_to_run} - {model_name} - {format(lr, 'e')}.csv"
         performance_frame.to_csv(file_name, sep=";", index=False)
-
-        torch.save(model.state_dict(), f"Models/ResNet/Model-Files/{model_name} - Tv2 - {format(lr, 'e')}.pt")
+            
+        torch.save(model.state_dict(), f"Performances/ResNet/Model-Files/{model_name} - Tv2 - {format(lr, 'e')}.pt")
 
         print("DONE!")
 
