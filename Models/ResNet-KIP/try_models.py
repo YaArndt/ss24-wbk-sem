@@ -19,18 +19,12 @@ import torchvision
 from torchvision import datasets, models
 from torch.utils.data import DataLoader, random_split
 from torch import nn, optim
-from PIL import Image, ImageOps
 import pandas as pd
 
 # =================================================================================================
 
 transform = transforms.Compose([
-    transforms.Grayscale(),
     transforms.Resize((224, 224)),
-
-    # Transform into 3 channel pseudo RGB
-    transforms.Grayscale(num_output_channels=3),
-
     transforms.ToTensor(),
 
     # Normalization parameters for ImageNet
@@ -41,7 +35,7 @@ transform = transforms.Compose([
 dataset = datasets.ImageFolder(root='Data/KIP', transform=transform)
 
 # Split dataset into training and testing
-train_size = int(0.8 * len(dataset))
+train_size = int(0.7 * len(dataset))
 test_size = len(dataset) - train_size
 train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
 
