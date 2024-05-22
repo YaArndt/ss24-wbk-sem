@@ -1,8 +1,9 @@
-# Description: This script is used to create a dataset for the project.
+# Description: 
+# This script is used to create a dataset for the project.
 
 # =================================================================================================
 
-from CamSupport.tinder import TinderSession
+from utils.tinder import TinderSession
 
 # =================================================================================================
 

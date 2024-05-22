@@ -1,3 +1,7 @@
+# Unnecessary directories
+*data/
+*runs/
+
 ssh_connect.txt
 
 # Byte-compiled / optimized / DLL files

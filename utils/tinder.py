@@ -1,13 +1,12 @@
-# Description: This file contains the TinderSession class, 
-# which is used to create Dataset-Tinder sessions.
-# The session is used to capture images from a camera and save 
-# them to the correct class folder.
+# Description: 
+# This file contains the TinderSession class, which is used to create Dataset-Tinder sessions.
+# The session is used to capture images from a camera and save them to the correct class folder.
 
 # =================================================================================================
 
 from typing import Tuple
 import PySimpleGUI as sg
-from CamSupport.camctrl import CamHandler
+from utils.camctrl import CamHandler
 from PIL import Image
 import os
 import keyboard

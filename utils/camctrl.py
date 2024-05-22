@@ -1,4 +1,5 @@
-# Description: Test the camera stream using the Daheng Imaging SDK
+# Description: 
+# Handle the camera stream using the Daheng Imaging SDK
 
 # =================================================================================================
 
