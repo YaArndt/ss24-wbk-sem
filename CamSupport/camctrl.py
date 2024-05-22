@@ -80,8 +80,9 @@ class CamHandler():
         numpy_image = raw_image.get_numpy_array()
         return numpy_image
 
-    def get_image(self, factor: float = 1) -> Image.Image:
+    def get_image_on_stram(self, factor: float = 1) -> Image.Image:
         """Gets a pillow image from the camera. The image can be resized by a factor.
+        REQUIRES THE STREAM TO BE ON!
 
         Args:
             factor (float, optional): Scaling factor to resize the image. Defaults to 1.
@@ -92,12 +93,40 @@ class CamHandler():
         numpy_image = self.get_numpy_image()
         image = Image.fromarray(numpy_image, 'L')
 
+        # Resize
         if factor != 1:
             width, height = image.size
             new_size = (int(width * factor), int(height * factor))
             image = image.resize(new_size)
 
         return image
+    
+    def get_image(self, factor: float = 1) -> Image.Image:
+        """Gets a pillow image from the camera. The image can be resized by a factor.
+        REQUIRES THE STREAM TO BE OFF!
+
+        Args:
+            factor (float, optional): Scaling factor to resize the image. Defaults to 1.
+
+        Returns:
+            Image.Image: Current image from the camera
+        """        
+
+        # Capture the Image
+        self.start_stream()
+        numpy_image = self.get_numpy_image()
+        self.stop_stream()
+
+        image = Image.fromarray(numpy_image, 'L')
+
+        # Resize
+        if factor != 1:
+            width, height = image.size
+            new_size = (int(width * factor), int(height * factor))
+            image = image.resize(new_size)
+
+        return image
+
     
     def preview(self):
         """Open a window to preview the camera stream. 
@@ -120,7 +149,7 @@ class CamHandler():
             if event == sg.WINDOW_CLOSED or event == 'Exit':
                 break
             
-            image = self.get_image(factor=0.5)
+            image = self.get_image_on_stram(factor=0.5)
             img_bytes = CamHandler.pil_to_bytes(image)
             window['image'].update(data=img_bytes)
 
