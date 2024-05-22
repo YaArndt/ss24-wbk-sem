@@ -19,10 +19,10 @@ from models.training import train_model
 
 # =================================================================================================
 
-DATA_DIR = 'Data/BilderNeu'
+DATA_DIR = '00_data/BilderNeu'
 RUN_DIR = '01_runs'
 RUN_TAG = 'ResNet'
-SAVE_MODELS = False
+SAVE_MODELS = True
 
 
 # Set the device to GPU if available
@@ -70,10 +70,14 @@ pos_label = data.class_to_idx[config.CLASSES["POS"]]
 neg_label = data.class_to_idx[config.CLASSES["NEG"]]
 performance = Performance(pos_label, neg_label)
 
-# Create a grid of hyperparameters
+# Create a grid of hyperparameters and models
 grid = ParameterGrid(
     model = [
-        get_pt_model('ResNet18', 1, device)
+        get_pt_model('ResNet18', 1, device),
+        get_pt_model('ResNet34', 1, device),
+        get_pt_model('ResNet50', 1, device),
+        get_pt_model('ResNet101', 1, device),
+        get_pt_model('ResNet152', 1, device)
     ],
 
     lr = [

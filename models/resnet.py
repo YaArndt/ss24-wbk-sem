@@ -29,6 +29,13 @@ def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[R
         
     Returns:
         Tuple[ResNet, str]: ResNet Model and the model name
+
+    Available Models:
+        - ResNet18
+        - ResNet34
+        - ResNet50
+        - ResNet101
+        - ResNet152
     """
 
 

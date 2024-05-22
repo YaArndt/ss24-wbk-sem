@@ -7,7 +7,7 @@ import config
 import torch
 from torch import nn
 from torch.optim import Optimizer
-from torch.optim.lr_scheduler import LRScheduler
+from torch.optim.lr_scheduler import _LRScheduler
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
@@ -23,7 +23,7 @@ def train_model (
     optimizer: Optimizer,
     writer: SummaryWriter,
     performance: Performance,
-    scheduler: Optional[LRScheduler] = None,
+    scheduler: Optional[_LRScheduler] = None,
 
 ):
     """Train the model on the given dataset and evaluate on the test dataset.
