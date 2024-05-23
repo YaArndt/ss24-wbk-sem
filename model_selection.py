@@ -13,7 +13,7 @@ from torchvision import datasets
 import torchvision.transforms as transforms
 from utils.parameters import ParameterGrid
 from utils.performance import Performance
-from utils.data	import KTimes90Rotation
+from utils.data	import KTimes90Rotation, DataVisualizer
 from models.resnet import get_pt_model
 from models.training import train_model
 
@@ -23,7 +23,6 @@ DATA_DIR = '00_data/BilderNeu'
 RUN_DIR = '01_runs'
 RUN_TAG = 'ResNet'
 SAVE_MODELS = True
-
 
 # Set the device to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -35,6 +34,9 @@ train_augmentation = transforms.Compose([
     KTimes90Rotation(),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
+
+    # Normalization parameters for ImageNet
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
 # Define the transformations for the testing dataset
@@ -43,6 +45,9 @@ test_augmentation = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
+
+    # Normalization parameters for ImageNet
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
 # Load the dataset
@@ -81,13 +86,35 @@ grid = ParameterGrid(
     ],
 
     lr = [
-        0.0005
+        0.0005,
+        0.0001
     ]
 )
 
 # Calculate the number of models to train and keep track of the current model
 models_to_train = len(grid)
 current_model = 0
+
+# Initialize the writer for the data samples
+data_writer = SummaryWriter(f"{RUN_DIR}/{RUN_TAG}/Data")
+
+# Initialize the data visualizer
+# The class dictionary is inverted to map the class indices to class names
+viz = DataVisualizer(class_dict={y: x for x, y in data.class_to_idx.items()})
+
+# Log a sample of the training and testing images
+for images, labels in train_loader:
+    log_image = viz.log_image(images, labels)
+    data_writer.add_image('Train Images', log_image, 0)
+    break
+
+for images, labels in test_loader:
+    log_image = viz.log_image(images, labels)
+    data_writer.add_image('Test Images', log_image, 0)
+    break
+
+# Close the data writer
+data_writer.close()
 
 # Iterate over the grid of hyperparameters
 for params in grid:
@@ -107,11 +134,13 @@ for params in grid:
     # Initialize the scheduler
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config.EPOCHS)
 
+    # Provide some information about the current model
     print(f"Training model {current_model}/{models_to_train}:")
     print(f"Model: {model_tag}, LR: {params['lr']}")
 
     try:
 
+        # Train the model
         train_model(
             train_loader, 
             test_loader, 
@@ -120,7 +149,11 @@ for params in grid:
             writer, 
             performance, 
             scheduler
-        )
+        )       
+        
+        # Save the model state dictionary
+        if SAVE_MODELS:
+            torch.save(model.state_dict(), f"{save_dir}/model_state_dict.pth")
 
     except KeyboardInterrupt:
         print("Training interrupted by user")

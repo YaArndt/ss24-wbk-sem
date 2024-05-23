@@ -1,5 +1,5 @@
 # Number of epochs to train the model
-EPOCHS = 10
+EPOCHS = 150
 
 # Assign positive and negative classes
 CLASSES = {
@@ -8,7 +8,7 @@ CLASSES = {
 }
 
 # Define the size of the trainig and testing datasets
-TRAIN_SIZE_RATIO = 0.8
+TRAIN_SIZE_RATIO = 0.75
 
 # Define the batch size for the DataLoader
 BATCH_SIZE = 32
