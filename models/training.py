@@ -97,30 +97,10 @@ def train_model (
             prec = performance.precision(preds, labels)
             rec = performance.recall(preds, labels)
             f1 = performance.f1_score(preds, labels)
-
-            if any(torch.isnan(torch.tensor([acc, prec,  rec, f1]))):
-                torch.save(images, "nan_images.pt")
-                torch.save(labels, "nan_labels.pt")
-                torch.save(output, "nan_output.pt")
-                torch.save(preds, "nan_preds.pt")
-                torch.save(model.state_dict(), "nan_model.pt")
-
-                print("NaN values detected in the performance metrics. Saved the data and model.")
-
-                exit() 
-
+            
             # Log the loss and performance metrics
             writer.add_scalar("Test/Loss", loss, test_i)
             writer.add_scalar("Test/Accuracy", acc, test_i)
             writer.add_scalar("Test/Precision", prec, test_i)
             writer.add_scalar("Test/Recall", rec, test_i)
             writer.add_scalar("Test/F1 Score", f1, test_i)
-
-
-
-
-
-
-
-
-        

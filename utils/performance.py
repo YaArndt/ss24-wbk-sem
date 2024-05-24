@@ -4,7 +4,6 @@
 # =================================================================================================
 
 import functools
-import numpy as np
 import torch
 from torch import Tensor
 
@@ -120,4 +119,3 @@ class Performance:
         recall = self.recall(predictions, labels)
         f1 = 2 * (precision * recall) / (precision + recall)
         return f1
-

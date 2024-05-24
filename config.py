@@ -11,7 +11,7 @@ CLASSES = {
 TRAIN_SIZE_RATIO = 0.75
 
 # Define the batch size for the DataLoader
-BATCH_SIZE = 32
+BATCH_SIZE = 50
 
 # Shuffle the dataset
 SHUFFLE = True

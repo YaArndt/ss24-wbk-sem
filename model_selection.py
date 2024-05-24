@@ -78,16 +78,16 @@ performance = Performance(pos_label, neg_label)
 # Create a grid of hyperparameters and models
 grid = ParameterGrid(
     model = [
-        get_pt_model('ResNet18', 1, device)
-        # get_pt_model('ResNet34', 1, device),
-        # get_pt_model('ResNet50', 1, device),
-        # get_pt_model('ResNet101', 1, device),
-        # get_pt_model('ResNet152', 1, device)
+        get_pt_model('ResNet18', 1, device),
+        get_pt_model('ResNet34', 1, device),
+        get_pt_model('ResNet50', 1, device),
+        get_pt_model('ResNet101', 1, device),
+        get_pt_model('ResNet152', 1, device)
     ],
 
     lr = [
-        0.0005
-        # 0.0001
+        0.0005,
+        0.0001
     ]
 )
 
