@@ -4,6 +4,7 @@
 # =================================================================================================
 
 import functools
+import numpy as np
 import torch
 from torch import Tensor
 
@@ -71,7 +72,8 @@ class Performance:
             float: Accuracy of the model
         """
         cf = self.cfm(predictions, labels)
-        return (cf["TP"] + cf["TN"]) / (cf["TP"] + cf["TN"] + cf["FP"] + cf["FN"])
+        acc = (cf["TP"] + cf["TN"]) / (cf["TP"] + cf["TN"] + cf["FP"] + cf["FN"])
+        return acc
     
     @validate_inputs
     def precision(self, predictions: Tensor, labels: Tensor) -> float:
@@ -85,7 +87,8 @@ class Performance:
             float: Precision of the model
         """
         cf = self.cfm(predictions, labels)
-        return cf["TP"] / (cf["TP"] + cf["FP"])
+        prec = cf["TP"] / (cf["TP"] + cf["FP"])
+        return prec
     
     @validate_inputs
     def recall(self, predictions: Tensor, labels: Tensor) -> float:
@@ -99,7 +102,8 @@ class Performance:
             float: Recall of the model
         """
         cf = self.cfm(predictions, labels)
-        return cf["TP"] / (cf["TP"] + cf["FN"])
+        rec = cf["TP"] / (cf["TP"] + cf["FN"])
+        return rec
     
     @validate_inputs
     def f1_score(self, predictions: Tensor, labels: Tensor) -> float:
@@ -114,5 +118,6 @@ class Performance:
         """
         precision = self.precision(predictions, labels)
         recall = self.recall(predictions, labels)
-        return 2 * (precision * recall) / (precision + recall)
+        f1 = 2 * (precision * recall) / (precision + recall)
+        return f1
 
