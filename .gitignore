@@ -1,5 +1,5 @@
 # Unnecessary directories
-*data/
+*data*/
 *runs/
 
 ssh_connect.txt

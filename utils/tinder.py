@@ -35,6 +35,12 @@ class TinderSession():
         self.image_count = image_count
         self.tag = tag
 
+        # Seen Images of classes:
+        self.seen_images = {
+            classes[0]: 0,
+            classes[1]: 0
+        }
+
         # Dictionary to store the key pressed status
         # This is used to prevent holding down the key to save multiple images 
         self.KEY_PRESSED = {
@@ -145,6 +151,7 @@ class TinderSession():
         # The "Update Preview" button updates the image preview with the current camera 
         # image, but does not save it
         layout = [
+            [sg.Text(f"{self.classes[0]}: {self.seen_images[self.classes[0]]}  -  {self.classes[1]}: {self.seen_images[self.classes[1]]}", key='counter')],
             [sg.Column([[sg.Image(data='', key='image')]], justification='center')],
             [
                 sg.Button(
@@ -197,10 +204,15 @@ class TinderSession():
             # Save the image to the correct class -> First Class
             if event == self.classes[0] or left_pressed:
                 self.save_image(current_image, self.classes[0], mode="normal")
+                self.seen_images[self.classes[0]] += 1
+                window['counter'].update(f"{self.classes[0]}: {self.seen_images[self.classes[0]]}  -  {self.classes[1]}: {self.seen_images[self.classes[1]]}")
+
 
             # Save the image to the correct class -> Second Class       
             if event == self.classes[1] or right_pressed:
                 self.save_image(current_image, self.classes[1], mode="normal")
+                self.seen_images[self.classes[1]] += 1
+                window['counter'].update(f"{self.classes[0]}: {self.seen_images[self.classes[0]]}  -  {self.classes[1]}: {self.seen_images[self.classes[1]]}")
 
             # Update the preview with the current camera image
             # Is done automatically after each save or when the "Update Preview" button is pressed
