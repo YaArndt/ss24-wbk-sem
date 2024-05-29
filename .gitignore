@@ -1,6 +1,7 @@
 # Unnecessary directories
 *data*/
 *runs/
+*saved_models/
 
 ssh_connect.txt
 

@@ -32,6 +32,7 @@ train_augmentation = transforms.Compose([
     transforms.Grayscale(),
     transforms.Resize((224, 224)),
     KTimes90Rotation(),
+    transforms.RandomRotation(),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 

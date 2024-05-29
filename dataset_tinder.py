@@ -11,7 +11,7 @@ from utils.tinder import TinderSession
 
 # Define the output path and the directory name
 OUT_PATH = "01_data_selfmade" 
-DIR = "kurz"
+DIR = "lang"
 
 # Setting the path
 path = os.path.join(OUT_PATH, DIR)
