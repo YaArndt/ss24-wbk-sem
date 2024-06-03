@@ -1,7 +1,7 @@
 import torchvision.transforms as transforms
-from torch.utils.data import DataLoader, random_split, Subset
+from torch.utils.data import DataLoader, random_split
 from torch.utils.tensorboard import SummaryWriter
-from utils.data	import KTimes90Rotation, DataVisualizer
+from utils.data	import DataVisualizer
 from torch.utils.data import Dataset
 from torchvision import datasets
 import config
@@ -32,12 +32,13 @@ train_augmentation = transforms.Compose([
     transforms.RandomRotation((-360, 360)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
+    transforms.RandomAffine(degrees=0, translate=(0.2, 0.2)),
     transforms.ColorJitter(brightness=0.5),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 
-    # Normalization parameters for ImageNet
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    # # Normalization parameters for ImageNet
+    # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
 # Define the transformations for the testing dataset
@@ -47,11 +48,13 @@ test_augmentation = transforms.Compose([
     transforms.RandomRotation((-360, 360)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
+    transforms.RandomAffine(degrees=0, translate=(0.2, 0.2)),
+    transforms.ColorJitter(brightness=0.5),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 
-    # Normalization parameters for ImageNet
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    # # Normalization parameters for ImageNet
+    # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
 # Load the dataset

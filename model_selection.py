@@ -21,7 +21,7 @@ from models.training import train_model
 
 DATA_DIR = '01_data_selfmade/kurz'
 RUN_DIR = '01_runs'
-RUN_TAG = 'ResNet with Augmentations'
+RUN_TAG = 'ResNet_With_Offset_Augmentation'
 SAVE_MODELS = True
 
 # Set the device to GPU if available
@@ -34,6 +34,7 @@ train_augmentation = transforms.Compose([
     transforms.RandomRotation((-360, 360)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
+    transforms.RandomAffine(degrees=0, translate=(0.2, 0.2)),
     transforms.ColorJitter(brightness=0.5),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
@@ -49,6 +50,8 @@ test_augmentation = transforms.Compose([
     transforms.RandomRotation((-360, 360)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
+    transforms.RandomAffine(degrees=0, translate=(0.2, 0.2)),
+    transforms.ColorJitter(brightness=0.5),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 
