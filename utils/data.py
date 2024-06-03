@@ -6,6 +6,7 @@
 from PIL import Image, ImageOps
 import random
 from torch import Tensor
+from torch.utils.data import Dataset
 from torchvision.transforms import functional as F
 from torchvision.transforms import transforms
 import io
@@ -50,7 +51,21 @@ class PadToSquare:
             
         # Pad the image and return
         return ImageOps.expand(image, (left, top, right, bottom), fill=0)
-    
+
+class TransformingDataset(Dataset):
+    def __init__(self, dataset, transform=None):
+        self.dataset = dataset
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        image, label = self.dataset[idx]
+        if self.transform:
+            image = self.transform(image)
+        return image, label
+
 class DataVisualizer:
     """Handles the visualization of image batches with their corresponding labels
     """

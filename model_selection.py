@@ -7,21 +7,21 @@
 import config
 import torch
 from torch import nn
-from torch.utils.data import DataLoader, random_split, Subset
+from torch.utils.data import DataLoader, random_split
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 import torchvision.transforms as transforms
 from utils.parameters import ParameterGrid
 from utils.performance import Performance
-from utils.data	import KTimes90Rotation, DataVisualizer
+from utils.data	import TransformingDataset, DataVisualizer
 from models.resnet import get_pt_model
 from models.training import train_model
 
 # =================================================================================================
 
-DATA_DIR = '00_data/BilderNeu'
+DATA_DIR = '01_data_selfmade/kurz'
 RUN_DIR = '01_runs'
-RUN_TAG = 'ResNet'
+RUN_TAG = 'ResNet with Augmentations'
 SAVE_MODELS = True
 
 # Set the device to GPU if available
@@ -31,8 +31,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 train_augmentation = transforms.Compose([
     transforms.Grayscale(),
     transforms.Resize((224, 224)),
-    KTimes90Rotation(),
-    transforms.RandomRotation(),
+    transforms.RandomRotation((-360, 360)),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
+    transforms.ColorJitter(brightness=0.5),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 
@@ -44,6 +46,9 @@ train_augmentation = transforms.Compose([
 test_augmentation = transforms.Compose([
     transforms.Grayscale(),
     transforms.Resize((224, 224)),
+    transforms.RandomRotation((-360, 360)),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
     transforms.Grayscale(num_output_channels=3),
     transforms.ToTensor(),
 
@@ -60,11 +65,8 @@ test_size = len(data) - train_size
 train_data, test_data = random_split(data, [train_size, test_size])
 
 # Apply the transformations to the datasets using Subset and lambda function
-train_data = Subset(data, train_data.indices)
-train_data.dataset.transform = train_augmentation
-
-test_data = Subset(data, test_data.indices)
-test_data.dataset.transform = test_augmentation
+train_data = TransformingDataset(train_data, train_augmentation)
+test_data = TransformingDataset(test_data, test_augmentation)
 
 # Create DataLoader for training and testing datasets
 train_loader = DataLoader(train_data, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE)
@@ -79,16 +81,16 @@ performance = Performance(pos_label, neg_label)
 # Create a grid of hyperparameters and models
 grid = ParameterGrid(
     model = [
-        get_pt_model('ResNet18', 1, device),
-        get_pt_model('ResNet34', 1, device),
-        get_pt_model('ResNet50', 1, device),
-        get_pt_model('ResNet101', 1, device),
-        get_pt_model('ResNet152', 1, device)
+        # get_pt_model('ResNet18', 1, device),
+        get_pt_model('ResNet34', 1, device)
+        # get_pt_model('ResNet50', 1, device),
+        # get_pt_model('ResNet101', 1, device),
+        # get_pt_model('ResNet152', 1, device)
     ],
 
     lr = [
-        0.0005,
-        0.0001
+        0.0005
+        # 0.0001,
     ]
 )
 
