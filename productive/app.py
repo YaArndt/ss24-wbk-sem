@@ -10,8 +10,6 @@ import torch
 from torch import nn
 import torchvision.transforms as transforms
 from utils.camctrl import CamHandler
-from PIL import Image
-import os
 import keyboard
 
 # =================================================================================================
