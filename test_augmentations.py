@@ -1,25 +1,19 @@
+# Description:
+# This script is used to visualize the data augmentation transformations on the dataset.
+# It can be used to check if the transformations are working as expected.
+
+# =================================================================================================
+
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, random_split
 from torch.utils.tensorboard import SummaryWriter
-from utils.data	import DataVisualizer
-from torch.utils.data import Dataset
+from utils.data	import DataVisualizer, TransformingDataset
 from torchvision import datasets
 import config
 
-class TransformingDataset(Dataset):
-    def __init__(self, dataset, transform=None):
-        self.dataset = dataset
-        self.transform = transform
+# =================================================================================================
 
-    def __len__(self):
-        return len(self.dataset)
-
-    def __getitem__(self, idx):
-        image, label = self.dataset[idx]
-        if self.transform:
-            image = self.transform(image)
-        return image, label
-
+# Some constants
 DATA_DIR = '01_data_selfmade\kurz'
 RUN_DIR = '01_runs'
 RUN_TAG = 'DataAugmentation'

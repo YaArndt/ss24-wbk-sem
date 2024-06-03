@@ -1,13 +1,20 @@
+# Description: 
+# This script is used to start the classification application. 
+# It loads a model and starts the GUI.
+
+# =================================================================================================
+
 from models.resnet import get_pt_model
 from productive import app
 import torch
 import torchvision.transforms as transforms
 
-
+# =================================================================================================
 
 if __name__ == '__main__':
 
-    MODEL_STATE_PATH = "02_saved_models\ResNet34 - 0.0005 - Kurz - RR\model_state_dict.pth"
+    # MODEL_STATE_PATH = "02_saved_models\ResNet34 - 0.0005 - Kurz - RR\model_state_dict.pth"
+    MODEL_STATE_PATH = "02_saved_models\ResNet34 - 0.0005 - Kurz - RR & Offset\model_state_dict.pth"
 
     classifier, _ = get_pt_model("ResNet34", 1, "cpu")
     state_dict = torch.load(MODEL_STATE_PATH, map_location="cpu")

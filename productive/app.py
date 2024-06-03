@@ -79,11 +79,23 @@ class ClassifyApp():
 
     def start_gui(self):
 
+        sg.theme('Black')
         layout = [
-            [sg.Text("Prediction: NaN", key='prediction')],
-            [sg.Text("Sigmoid Out: NaN", key='output')],
+            [sg.HorizontalSeparator()],
+            [
+                sg.Text("Prediction: NaN", key='prediction'),
+                sg.Push(),
+                sg.Text("Sigmoid Out: NaN", key='output')
+            ],
+            [sg.HorizontalSeparator()],
             [sg.Column([[sg.Image(data='', key='image')]], justification='center')],
-            [sg.Button("Classify")]
+            [sg.HorizontalSeparator()],
+            [
+                sg.Push(),
+                sg.Button("Classify"),
+                sg.Push()
+            ],
+            [sg.HorizontalSeparator()]
         ]
 
         window = sg.Window("Classify App", layout, finalize=True)
@@ -91,7 +103,7 @@ class ClassifyApp():
         initial_run = True
 
         while True:
-            event, values = window.read(timeout=50)
+            event, _ = window.read(timeout=50)
 
             if event == sg.WINDOW_CLOSED:
                 break
@@ -112,7 +124,14 @@ class ClassifyApp():
                 window['image'].update(data=img_bytes)
 
                 class_name, sigmoid_out = self.classify_current_image()
-                window['prediction'].update(f"Prediction: {class_name}")
+                sigmoid_out = round(sigmoid_out, 6)
+
+                if class_name == list(self.index_to_class_dict.values())[0]:
+                    col = 'green'
+                else:
+                    col = 'red'
+
+                window['prediction'].update(f"Prediction: {class_name}", text_color=col)
                 window['output'].update(f"Sigmoid Out: {sigmoid_out}")
 
         window.close()
