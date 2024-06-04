@@ -6,12 +6,13 @@
 import torch
 from torch import nn
 from torchvision import models
-from torchvision.models import ResNet18_Weights
-from torchvision.models import ResNet34_Weights
-from torchvision.models import ResNet50_Weights
-from torchvision.models import ResNet101_Weights
-from torchvision.models import ResNet152_Weights
-from torchvision.models import ResNet
+from torchvision.models import (
+    ResNet18_Weights, 
+    ResNet34_Weights, 
+    ResNet50_Weights, 
+    ResNet101_Weights, 
+    ResNet152_Weights, 
+    ResNet)
 from typing import Tuple
 
 # =================================================================================================

@@ -9,19 +9,24 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, random_split
 from torch.utils.tensorboard import SummaryWriter
-from torchvision import datasets
 import torchvision.transforms as transforms
 from utils.parameters import ParameterGrid
 from utils.performance import Performance
-from utils.data	import TransformingDataset, DataVisualizer
-from models.resnet import get_pt_model
+from utils.data	import TransformingDataset, DataVisualizer, CombinedBinaryDataset
+import models.resnet as resnet
+import models.vgg as vgg
 from models.training import train_model
 
 # =================================================================================================
 
-DATA_DIR = '01_data_selfmade/kurz'
+DATA_DIRS = [
+    '01_data_selfmade/errors_kurz',
+    '01_data_selfmade/errors_lang',
+    '01_data_selfmade/kurz',
+    '01_data_selfmade/lang',
+]
 RUN_DIR = '01_runs'
-RUN_TAG = 'ResNet_With_Offset_Augmentation'
+RUN_TAG = 'Combined_Data_Model_Compare'
 SAVE_MODELS = True
 
 # Set the device to GPU if available
@@ -60,7 +65,7 @@ test_augmentation = transforms.Compose([
 ])
 
 # Load the dataset
-data = datasets.ImageFolder(root=DATA_DIR)
+data = CombinedBinaryDataset(DATA_DIRS)
 
 # Split dataset into training and testing
 train_size = int(config.TRAIN_SIZE_RATIO * len(data))
@@ -84,16 +89,24 @@ performance = Performance(pos_label, neg_label)
 # Create a grid of hyperparameters and models
 grid = ParameterGrid(
     model = [
-        # get_pt_model('ResNet18', 1, device),
-        get_pt_model('ResNet34', 1, device)
-        # get_pt_model('ResNet50', 1, device),
-        # get_pt_model('ResNet101', 1, device),
-        # get_pt_model('ResNet152', 1, device)
+        vgg.get_pt_model('VGG11', 1, device),
+        vgg.get_pt_model('VGG13', 1, device),
+        vgg.get_pt_model('VGG16', 1, device),
+        vgg.get_pt_model('VGG19', 1, device),
+        vgg.get_pt_model('VGG11-BN', 1, device),
+        vgg.get_pt_model('VGG13-BN', 1, device),
+        vgg.get_pt_model('VGG16-BN', 1, device),
+        vgg.get_pt_model('VGG19-BN', 1, device),
+        resnet.get_pt_model('ResNet18', 1, device),
+        resnet.get_pt_model('ResNet34', 1, device),
+        resnet.get_pt_model('ResNet50', 1, device),
+        resnet.get_pt_model('ResNet101', 1, device),
+        resnet.get_pt_model('ResNet152', 1, device)
     ],
 
     lr = [
-        0.0005
-        # 0.0001,
+        0.0005,
+        0.0001
     ]
 )
 
@@ -108,16 +121,27 @@ data_writer = SummaryWriter(f"{RUN_DIR}/{RUN_TAG}/Data")
 # The class dictionary is inverted to map the class indices to class names
 viz = DataVisualizer(class_dict={y: x for x, y in data.class_to_idx.items()})
 
-# Log a sample of the training and testing images
+
+training_i = 1
+testing_i = 1
+
 for images, labels in train_loader:
     log_image = viz.log_image(images, labels)
     data_writer.add_image('Train Images', log_image, 0)
-    break
+    
+    if training_i == config.VIZ_BATCHES:
+        break
+    else:
+        training_i += 1
 
 for images, labels in test_loader:
     log_image = viz.log_image(images, labels)
     data_writer.add_image('Test Images', log_image, 0)
-    break
+    
+    if testing_i == config.VIZ_BATCHES:
+        break
+    else:
+        testing_i += 1
 
 # Close the data writer
 data_writer.close()
