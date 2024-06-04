@@ -127,7 +127,7 @@ testing_i = 1
 
 for images, labels in train_loader:
     log_image = viz.log_image(images, labels)
-    data_writer.add_image('Train Images', log_image, 0)
+    data_writer.add_image('Train Images', log_image, training_i)
     
     if training_i == config.VIZ_BATCHES:
         break
@@ -136,7 +136,7 @@ for images, labels in train_loader:
 
 for images, labels in test_loader:
     log_image = viz.log_image(images, labels)
-    data_writer.add_image('Test Images', log_image, 0)
+    data_writer.add_image('Test Images', log_image, testing_i)
     
     if testing_i == config.VIZ_BATCHES:
         break
