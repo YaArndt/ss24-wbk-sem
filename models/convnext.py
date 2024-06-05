@@ -39,25 +39,23 @@ def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[C
 
 
     if model_name == 'ConvNeXt_Tiny':
-        model = models.resnet18(weights=ConvNeXt_Tiny_Weights.DEFAULT)
+        model = models.convnext_tiny(weights=ConvNeXt_Tiny_Weights.DEFAULT)
 
     elif model_name == 'ConvNeXt_Small':
-        model = models.resnet34(weights=ConvNeXt_Small_Weights.DEFAULT)
+        model = models.convnext_small(weights=ConvNeXt_Small_Weights.DEFAULT)
 
     elif model_name == 'ConvNeXt_Base':
-        model = models.resnet50(weights=ConvNeXt_Base_Weights.DEFAULT)
+        model = models.convnext_base(weights=ConvNeXt_Base_Weights.DEFAULT)
 
     elif model_name == 'ConvNeXt_Large':
-        model = models.resnet101(weights=ConvNeXt_Large_Weights.DEFAULT)
+        model = models.convnext_large(weights=ConvNeXt_Large_Weights.DEFAULT)
 
     else :
         raise ValueError(f"Unknown model name: {model_name}")
 
     # Modify the fully connected layer to match the number of classes
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Sequential(
-        nn.Linear(num_ftrs, out_dim),  
-    )
+    num_ftrs = model.classifier[2].in_features
+    model.classifier[2] = nn.Linear(num_ftrs, out_dim)
 
     # Send the model to the device
     model = model.to(device)

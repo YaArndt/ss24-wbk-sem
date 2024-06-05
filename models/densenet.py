@@ -38,26 +38,24 @@ def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[D
     """
 
 
-    if model_name == 'DenseNet_Tiny':
-        model = models.resnet18(weights=DenseNet121_Weights.DEFAULT)
+    if model_name == 'DenseNet_121':
+        model = models.densenet121(weights=DenseNet121_Weights.DEFAULT)
 
-    elif model_name == 'DenseNet_Small':
-        model = models.resnet34(weights=DenseNet161_Weights.DEFAULT)
+    elif model_name == 'DenseNet_161':
+        model = models.densenet161(weights=DenseNet161_Weights.DEFAULT)
 
-    elif model_name == 'DenseNet_Base':
-        model = models.resnet50(weights=DenseNet169_Weights.DEFAULT)
+    elif model_name == 'DenseNet_169':
+        model = models.densenet169(weights=DenseNet169_Weights.DEFAULT)
 
-    elif model_name == 'DenseNet_Large':
-        model = models.resnet101(weights=DenseNet201_Weights.DEFAULT)
+    elif model_name == 'DenseNet_201':
+        model = models.densenet201(weights=DenseNet201_Weights.DEFAULT)
 
     else :
         raise ValueError(f"Unknown model name: {model_name}")
 
     # Modify the fully connected layer to match the number of classes
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Sequential(
-        nn.Linear(num_ftrs, out_dim),  
-    )
+    num_ftrs = model.classifier.in_features
+    model.classifier = nn.Linear(num_ftrs, out_dim)
 
     # Send the model to the device
     model = model.to(device)

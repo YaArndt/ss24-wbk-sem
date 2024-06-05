@@ -61,57 +61,56 @@ def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[R
 
 
     if model_name == 'RegNet_X_400MF':
-        model = models.resnet18(weights=RegNet_X_400MF_Weights.DEFAULT)
+        model = models.regnet_x_400mf(weights=RegNet_X_400MF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_X_800MF':
-        model = models.resnet34(weights=RegNet_X_800MF_Weights.DEFAULT)
+        model = models.regnet_x_800mf(weights=RegNet_X_800MF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_X_1_6GF':
-        model = models.resnet50(weights=RegNet_X_1_6GF_Weights.DEFAULT)
+        model = models.regnet_x_1_6gf(weights=RegNet_X_1_6GF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_X_3_2GF':
-        model = models.resnet101(weights=RegNet_X_3_2GF_Weights.DEFAULT)
+        model = models.regnet_x_3_2gf(weights=RegNet_X_3_2GF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_X_8GF':
-        model = models.resnet152(weights=RegNet_X_8GF_Weights.DEFAULT)
+        model = models.regnet_x_8gf(weights=RegNet_X_8GF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_X_16GF':
-        model = models.resnet152(weights=RegNet_X_16GF_Weights.DEFAULT)
+        model = models.regnet_x_16gf(weights=RegNet_X_16GF_Weights.DEFAULT)
     
     elif model_name == 'RegNet_X_32GF':
-        model = models.resnet152(weights=RegNet_X_32GF_Weights.DEFAULT)
+        model = models.regnet_x_32gf(weights=RegNet_X_32GF_Weights.DEFAULT)
     
     elif model_name == 'RegNet_Y_400MF':
-        model = models.resnet18(weights=RegNet_Y_400MF_Weights.DEFAULT)
+        model = models.regnet_y_400mf(weights=RegNet_Y_400MF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_Y_800MF':
-        model = models.resnet34(weights=RegNet_Y_800MF_Weights.DEFAULT)
+        model = models.regnet_y_800mf(weights=RegNet_Y_800MF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_Y_1_6GF':
-        model = models.resnet50(weights=RegNet_Y_1_6GF_Weights.DEFAULT)
+        model = models.regnet_y_1_6gf(weights=RegNet_Y_1_6GF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_Y_3_2GF':
-        model = models.resnet101(weights=RegNet_Y_3_2GF_Weights.DEFAULT)
+        model = models.regnet_y_3_2gf(weights=RegNet_Y_3_2GF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_Y_8GF':
-        model = models.resnet152(weights=RegNet_Y_8GF_Weights.DEFAULT)
+        model = models.regnet_y_8gf(weights=RegNet_Y_8GF_Weights.DEFAULT)
 
     elif model_name == 'RegNet_Y_16GF':
-        model = models.resnet152(weights=RegNet_Y_16GF_Weights.DEFAULT)
+        model = models.regnet_y_16gf(weights=RegNet_Y_16GF_Weights.DEFAULT)
     
     elif model_name == 'RegNet_Y_32GF':
-        model = models.resnet152(weights=RegNet_Y_32GF_Weights.DEFAULT)
+        model = models.regnet_y_32gf(weights=RegNet_Y_32GF_Weights.DEFAULT)
     
     elif model_name == 'RegNet_Y_128GF':
-        model = models.resnet152(weights=RegNet_Y_128GF_Weights.DEFAULT)
+        model = models.regnet_y_128gf(weights=RegNet_Y_128GF_Weights.DEFAULT)
     else :
         raise ValueError(f"Unknown model name: {model_name}")
 
     # Modify the fully connected layer to match the number of classes
     num_ftrs = model.fc.in_features
-    model.fc = nn.Sequential(
-        nn.Linear(num_ftrs, out_dim),  
-    )
+    model.fc = nn.Linear(num_ftrs, out_dim)  
+    
 
     # Send the model to the device
     model = model.to(device)
