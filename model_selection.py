@@ -15,6 +15,9 @@ from utils.performance import Performance
 from utils.data	import TransformingDataset, DataVisualizer, CombinedBinaryDataset
 import models.resnet as resnet
 import models.vgg as vgg
+import models.convnext as convnext
+import models.densenet as densenet
+import models.regnet as regnet
 from models.training import train_model
 
 # =================================================================================================
@@ -89,19 +92,9 @@ performance = Performance(pos_label, neg_label)
 # Create a grid of hyperparameters and models
 grid = ParameterGrid(
     model = [
-        vgg.get_pt_model('VGG11', 1, device),
-        vgg.get_pt_model('VGG13', 1, device),
-        vgg.get_pt_model('VGG16', 1, device),
-        vgg.get_pt_model('VGG19', 1, device),
-        vgg.get_pt_model('VGG11-BN', 1, device),
-        vgg.get_pt_model('VGG13-BN', 1, device),
-        vgg.get_pt_model('VGG16-BN', 1, device),
-        vgg.get_pt_model('VGG19-BN', 1, device),
-        resnet.get_pt_model('ResNet18', 1, device),
-        resnet.get_pt_model('ResNet34', 1, device),
-        resnet.get_pt_model('ResNet50', 1, device),
-        resnet.get_pt_model('ResNet101', 1, device),
-        resnet.get_pt_model('ResNet152', 1, device)
+        convnext.get_pt_model('ConvNeXt_Tiny', 1, device),
+        regnet.get_pt_model('RegNet_X_400MF', 1, device),
+        densenet.get_pt_model('DenseNet_121', 1, device)
     ],
 
     lr = [
