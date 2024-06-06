@@ -19,6 +19,7 @@ from typing import Tuple
 
 def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[ResNet, str]:
     """Initialize different types of ResNet models based on given name.
+    Load the pre-trained weights.
 
     Args:
         model_name (str): Name of the ResNet structure
@@ -54,6 +55,58 @@ def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[R
 
     elif model_name == 'ResNet152':
         model = models.resnet152(weights=ResNet152_Weights.DEFAULT)
+    else :
+        raise ValueError(f"Unknown model name: {model_name}")
+
+    # Modify the fully connected layer to match the number of classes
+    num_ftrs = model.fc.in_features
+    model.fc = nn.Sequential(
+        nn.Linear(num_ftrs, out_dim),  
+    )
+
+    # Send the model to the device
+    model = model.to(device)
+
+    return model, model_name
+
+def get_empty_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[ResNet, str]:
+    """Initialize different types of ResNet models based on given name.
+    Does not load the weights.
+
+    Args:
+        model_name (str): Name of the ResNet structure
+        out_dim (int): Output dimensions
+        device (torch.device): Device to run the model on
+
+    Raises:
+        ValueError: If model_name is not recognized
+        
+    Returns:
+        Tuple[ResNet, str]: ResNet Model and the model name
+
+    Available Models:
+        - ResNet18
+        - ResNet34
+        - ResNet50
+        - ResNet101
+        - ResNet152
+    """
+
+
+    if model_name == 'ResNet18':
+        model = models.resnet18()
+
+    elif model_name == 'ResNet34':
+        model = models.resnet34()
+
+    elif model_name == 'ResNet50':
+        model = models.resnet50()
+
+    elif model_name == 'ResNet101':
+        model = models.resnet101()
+
+    elif model_name == 'ResNet152':
+        model = models.resnet152()
     else :
         raise ValueError(f"Unknown model name: {model_name}")
 

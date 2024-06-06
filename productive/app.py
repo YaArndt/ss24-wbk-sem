@@ -95,16 +95,17 @@ class ClassifyApp():
             return
 
         # Load the model depending on the type and architecture
+        # Do not load the weights of the model, since they are already saved in the state dictionary
         if model_type == "ResNet":
-            self.classifier, _ = resnet.get_pt_model(architecture, 1, "cpu")
+            self.classifier, _ = resnet.get_empty_model(architecture, 1, "cpu")
         elif model_type == "VGG":
-            self.classifier, _ = vgg.get_pt_model(architecture, 1, "cpu")
+            self.classifier, _ = vgg.get_empty_model(architecture, 1, "cpu")
         elif model_type == "ConvNeXt":
-            self.classifier, _ = convnext.get_pt_model(architecture, 1, "cpu")
+            self.classifier, _ = convnext.get_empty_model(architecture, 1, "cpu")
         elif model_type == "RegNet":
-            self.classifier, _ = regnet.get_pt_model(architecture, 1, "cpu") 
+            self.classifier, _ = regnet.get_empty_model(architecture, 1, "cpu") 
         elif model_type == "DenseNet":
-            self.classifier, _ = densenet.get_pt_model(architecture, 1, "cpu")
+            self.classifier, _ = densenet.get_empty_model(architecture, 1, "cpu")
         else:
             raise ValueError("Unknown model type")
 
@@ -181,6 +182,7 @@ class ClassifyApp():
 
         # Get the model nicknames
         nicknames = self.get_model_nicknames()
+        selector_len = len(nicknames) if len(nicknames) < 4 else 4
 
         # Set the theme of the GUI to Black
         sg.theme('Black')
@@ -190,7 +192,7 @@ class ClassifyApp():
             [   
                 # Area to select the model
                 sg.Text('Select a model:'),
-                sg.Listbox(values=nicknames, size=(30, 2), enable_events=True, key='model_list'),
+                sg.Listbox(values=nicknames, size=(30, selector_len), enable_events=True, key='model_list'),
                 sg.Push(),
                 sg.Button("Load Model"),
             ],
@@ -253,6 +255,14 @@ class ClassifyApp():
                             self.load_model(model)
                             window['current_model'].update(f"Current Model: {selected_model}")
                             break
+                    
+                    # Notify the user that the model was loaded successfully
+                    sg.popup_auto_close(
+                        "Model loaded successfully!", 
+                        auto_close_duration=1.5, 
+                        no_titlebar=True, 
+                        button_type=sg.POPUP_BUTTONS_NO_BUTTONS,
+                        background_color='green')
 
                 except Exception as e :
 
@@ -275,7 +285,7 @@ class ClassifyApp():
                     else:
                         col = 'red'
 
-                    window['prediction'].update(f"Prediction: {class_name}", text_color=col)
+                    window['prediction'].update(f"Prediction: {class_name}", background_color=col)
                     window['output'].update(f"Sigmoid Out: {sigmoid_out}")
 
                 except MissingClassifierException:

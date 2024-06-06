@@ -8,10 +8,122 @@
         },
 
         {
-            "nickname": "VGG11-BN - LR: 1e-5",
+            "nickname": "ResNet34 - LR: 5e-4",
+            "type": "ResNet",
+            "architecture": "ResNet34",
+            "path": "02_saved_models/ResNet34/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet50 - LR: 5e-4",
+            "type": "ResNet",
+            "architecture": "ResNet50",
+            "path": "02_saved_models/ResNet50/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet101 - LR: 5e-4",
+            "type": "ResNet",
+            "architecture": "ResNet101",
+            "path": "02_saved_models/ResNet101/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet152 - LR: 5e-4",
+            "type": "ResNet",
+            "architecture": "ResNet152",
+            "path": "02_saved_models/ResNet152/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet18 - LR: 1e-4",
+            "type": "ResNet",
+            "architecture": "ResNet18",
+            "path": "02_saved_models/ResNet18/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet34 - LR: 1e-4",
+            "type": "ResNet",
+            "architecture": "ResNet34",
+            "path": "02_saved_models/ResNet34/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet50 - LR: 1e-4",
+            "type": "ResNet",
+            "architecture": "ResNet50",
+            "path": "02_saved_models/ResNet50/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet101 - LR: 1e-4",
+            "type": "ResNet",
+            "architecture": "ResNet101",
+            "path": "02_saved_models/ResNet101/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "ResNet152 - LR: 1e-4",
+            "type": "ResNet",
+            "architecture": "ResNet152",
+            "path": "02_saved_models/ResNet152/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG11-BN - LR: 5e-1",
             "type": "VGG",
             "architecture": "VGG11-BN",
             "path": "02_saved_models/VGG11-BN/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG13-BN - LR: 5e-1",
+            "type": "VGG",
+            "architecture": "VGG13-BN",
+            "path": "02_saved_models/VGG13-BN/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG16-BN - LR: 5e-1",
+            "type": "VGG",
+            "architecture": "VGG16-BN",
+            "path": "02_saved_models/VGG16-BN/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG19-BN - LR: 5e-1",
+            "type": "VGG",
+            "architecture": "VGG19-BN",
+            "path": "02_saved_models/VGG19-BN/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG11-BN - LR: 1e-1",
+            "type": "VGG",
+            "architecture": "VGG11-BN",
+            "path": "02_saved_models/VGG11-BN/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG13-BN - LR: 1e-1",
+            "type": "VGG",
+            "architecture": "VGG13-BN",
+            "path": "02_saved_models/VGG13-BN/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG16-BN - LR: 1e-1",
+            "type": "VGG",
+            "architecture": "VGG16-BN",
+            "path": "02_saved_models/VGG16-BN/0.0001/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG19-BN - LR: 1e-1",
+            "type": "VGG",
+            "architecture": "VGG19-BN",
+            "path": "02_saved_models/VGG19-BN/0.0001/model_state_dict.pth"
         }
     ]
 }
