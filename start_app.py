@@ -4,24 +4,17 @@
 
 # =================================================================================================
 
-from models.resnet import get_pt_model
 from productive import app
-import torch
 import torchvision.transforms as transforms
 
 # =================================================================================================
 
 if __name__ == '__main__':
-
-    # MODEL_STATE_PATH = "02_saved_models\ResNet34 - 0.0005 - Kurz - RR\model_state_dict.pth"
-    MODEL_STATE_PATH = "02_saved_models\ResNet34 - 0.0005 - Kurz - RR & Offset\model_state_dict.pth"
-
-    classifier, _ = get_pt_model("ResNet34", 1, "cpu")
-    state_dict = torch.load(MODEL_STATE_PATH, map_location="cpu")
-    classifier.load_state_dict(state_dict)
-
+    
+    # Index to class dictionary
     index_to_class_dict = {0: "IO", 1: "NIO"}
 
+    # Transformations necessary for the model
     transformations = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.Grayscale(num_output_channels=3),
@@ -29,8 +22,10 @@ if __name__ == '__main__':
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
-    application = app.ClassifyApp(classifier, index_to_class_dict, transformations)
+    # Create an application
+    application = app.ClassifyApp(index_to_class_dict, transformations)
 
+    # Start the GUI
     application.start_gui()
 
 

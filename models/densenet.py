@@ -31,10 +31,10 @@ def get_pt_model(model_name: str, out_dim: int, device: torch.device) -> Tuple[D
         Tuple[DenseNet, str]: DenseNet Model and the model name
 
     Available Models:
-        - DenseNet121_Weights
-        - DenseNet161_Weights
-        - DenseNet169_Weights
-        - DenseNet201_Weights
+        - DenseNet121
+        - DenseNet161
+        - DenseNet169
+        - DenseNet201
     """
 
 

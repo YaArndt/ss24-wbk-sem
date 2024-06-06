@@ -1,0 +1,17 @@
+{
+    "models":[
+        {
+            "nickname": "ResNet18 - LR: 5e-4",
+            "type": "ResNet",
+            "architecture": "ResNet18",
+            "path": "02_saved_models/ResNet18/0.0005/model_state_dict.pth"
+        },
+
+        {
+            "nickname": "VGG11-BN - LR: 1e-5",
+            "type": "VGG",
+            "architecture": "VGG11-BN",
+            "path": "02_saved_models/VGG11-BN/0.0005/model_state_dict.pth"
+        }
+    ]
+}
